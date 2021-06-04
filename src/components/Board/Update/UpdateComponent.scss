@@ -1,0 +1,23 @@
+.update-style {
+  margin-top: 3%;
+  width: 100%;
+  .ql-container {
+    .ql-editor {
+      min-height: 40vh;
+      max-height: 80vh;
+    }
+  }
+  &__btnBox {
+    display: flex;
+    margin-top: 1%;
+    width: 100%;
+    flex-direction: row;
+    justify-content: flex-end;
+
+    .goBackBtn {
+    }
+    .submitBtn {
+      margin-left: 1%;
+    }
+  }
+}

@@ -1,24 +1,42 @@
-import React from 'react';
-import logo from './logo.svg';
-import './App.css';
+import React, { LazyExoticComponent, Suspense, useEffect } from 'react';
+import { BrowserRouter, Switch, Route } from 'react-router-dom';
+import { useDispatch } from 'react-redux';
+import { tokenRefreshRequest, HooksLogin } from 'src/store/login/loginSlice';
+import Routes from './pages';
+interface IRouteProps {
+  component: LazyExoticComponent<(props: any) => JSX.Element>;
+  title: string;
+  path: string;
+  layout: boolean;
+  exact: boolean;
+}
 
 function App() {
+  const dispatch = useDispatch();
+  const { isLogin } = HooksLogin();
+  useEffect(() => {
+    if (!isLogin) {
+      dispatch(
+        tokenRefreshRequest({
+          method: 'post',
+          api: 'tokenRefresh',
+          data: { refresh: localStorage.getItem('refresh') },
+        }),
+      );
+    }
+  }, [isLogin]);
+
   return (
     <div className="App">
-      <header className="App-header">
-        <img src={logo} className="App-logo" alt="logo" />
-        <p>
-          Edit <code>src/App.tsx</code> and save to reload.
-        </p>
-        <a
-          className="App-link"
-          href="https://reactjs.org"
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          Learn React
-        </a>
-      </header>
+      <Suspense fallback={<div>...loading...</div>}>
+        <BrowserRouter>
+          <Switch>
+            {Routes.map((info: IRouteProps) => (
+              <Route {...info} key={`${info.path}`} />
+            ))}
+          </Switch>
+        </BrowserRouter>
+      </Suspense>
     </div>
   );
 }

@@ -1,0 +1,24 @@
+.board-style {
+  width: 100%;
+  text-align: center;
+  &__list {
+    margin-top: 3%;
+    width: 100%;
+    border-collapse: collapse;
+    table-layout: fixed;
+    border-top: 1px solid #444444;
+    th,
+    td {
+      border-bottom: 1px solid #444444;
+      padding: 10px;
+    }
+  }
+  &__btnBox {
+    display: flex;
+    width: 100%;
+    justify-content: flex-end;
+    margin-top: 1%;
+    .postBtn {
+    }
+  }
+}
