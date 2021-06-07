@@ -9,9 +9,9 @@ const BASENAME = 'http://192.168.0.12:8000';
 
 const path: any = {
   //manager단
-  logout: 'api/user/logout',
-  login: 'api/user/signin',
   signup: 'api/user/signup',
+  login: 'api/user/signin',
+  logout: 'api/user/logout',
   board: 'api/post',
   tokenRefresh: 'api/token/refresh',
   tempImage: 'api/post/image',
@@ -43,6 +43,7 @@ function callApi({ ...info }: Iinfo) {
 
   const url = id ? `${API_HEAD}/${path[api]}/${id}` : `${API_HEAD}/${path[api]}`;
 
+  // axios.defaults.withCredentials = true;
   return axios({
     method,
     url,

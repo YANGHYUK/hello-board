@@ -3,6 +3,7 @@ import ReactDOM from 'react-dom';
 import { Provider } from 'react-redux';
 import store from 'src/store';
 import ModalsComponent from 'src/components/commons/Modals/ModalsComponent';
+import { BrowserRouter } from 'react-router-dom';
 import App from './App';
 import 'src/styles/_reset.scss';
 
@@ -12,7 +13,9 @@ ReactDOM.render(
   <React.StrictMode>
     <Provider store={store}>
       <ModalsComponent />
-      <App />
+      <BrowserRouter>
+        <App />
+      </BrowserRouter>
     </Provider>
   </React.StrictMode>,
   document.getElementById('root'),

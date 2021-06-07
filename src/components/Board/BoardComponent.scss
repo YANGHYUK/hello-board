@@ -1,6 +1,21 @@
 .board-style {
   width: 100%;
   text-align: center;
+  display: flex;
+  flex-direction: column;
+  &__header {
+    // position: fixed;
+    // z-index: 100;
+    display: flex;
+    width: 100%;
+    justify-content: flex-end;
+
+    .logoutBtn {
+      background-color: #444444;
+      color: white;
+      border-radius: 6px;
+    }
+  }
   &__list {
     margin-top: 3%;
     width: 100%;

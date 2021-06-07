@@ -32,6 +32,7 @@ export interface IloginRequestSuccess {
 export interface IlogoutRequest {
   method: string;
   api: string;
+  data: { refresh: string };
   callback?: (() => void | undefined) | undefined;
 }
 export type AuthActionType = PayloadAction<IloginRequest> | PayloadAction<IlogoutRequest>;
@@ -55,11 +56,9 @@ export const loginSlice = createSlice({
       state.error = '에러';
     },
     tokenRefreshRequest: (state, _action: any) => {
-      console.log('hi');
       state.error = '';
     },
     tokenRefreshRequestSuccess: (state, _: any) => {
-      console.log('hihih');
       state.data.isLogin = true;
     },
     tokenRefreshRequestFailure: (state, _: any) => {

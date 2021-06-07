@@ -25,40 +25,7 @@ const WriteComponent = () => {
 
     return new File([u8arr], filename, { type: mime });
   };
-  const [imageOnChange, setImageOnChange] = useState(false);
-  const handleChange =
-    //  useCallback(
-    async (html: any) => {
-      const quill = quillRef.current.getEditor();
-      console.log({ html });
-      if (html) {
-        const imgCheckRegex: any = new RegExp('data:image/([a-zA-Z]*);base64,([^"]*)', 'g');
-        if (imgCheckRegex.exec(html)) {
-          const base64ImgString = html.match(imgCheckRegex);
-          if (base64ImgString && base64ImgString.length) {
-            setImageOnChange(true);
-            const base64Img = dataURLtoFile(base64ImgString, `base64 + ${new Date()}`);
-            const file = base64Img;
-            const formData = new FormData();
-            formData.append('files', file);
 
-            // Save current cursor state
-            const range = quill.selection.savedRange;
-
-            const res = await apiPostNewsImage(formData); // API post, returns image location as string e.g. 'http://www.example.com/images/foo.png'
-            if (imageOnChange === false) {
-              quill.insertEmbed(range.index, 'image', res.data);
-            }
-          }
-        }
-        // quill.root.innerHTML = html;
-
-        return setHtmlContent(html);
-        // quill.root.innerHTML = html;
-      }
-    };
-  // , []);
-  // const dispatch = useDispatch();
   const apiPostNewsImage = (formData: any) => {
     return axios({
       method: 'post',
@@ -68,65 +35,43 @@ const WriteComponent = () => {
     });
   };
 
-  const imageHandler = () => {
-    const input: any = document.createElement('input');
-
-    input.setAttribute('type', 'file');
-    input.setAttribute('accept', 'image/*');
-    input.click();
-
-    input.onchange = async () => {
-      const file = input.files[0];
-
-      const formData = new FormData();
-
-      formData.append('files', file);
-
-      // Save current cursor state
-      const quill = quillRef.current.getEditor();
-      const range = quill.getSelection();
-
-      // Insert temporary loading placeholder image
-      console.log(quill.insertEmbed, '12830981092093');
-      console.log('range.index:', range.index);
-      quill.insertEmbed(range.index, 'image', LoaderImg);
-
-      // Move cursor to right side of image (easier to continue typing)
-      quill.setSelection(range.index + 1);
-
-      // console.log(JSON.stri formData }, 222222);
-
-      const res = await apiPostNewsImage(formData); // API post, returns image location as string e.g. 'http://www.example.com/images/foo.png'
-
-      // Remove placeholder image
-      quill.deleteText(range.index, 1);
-
-      // Insert uploaded image
-      // quill.insertEmbed(range.index, 'image', res.body.image);
-      console.log({ res });
-      quill.insertEmbed(range.index, 'image', res.data);
-    };
-  };
+  const imageHtmlCheck = useRef(false);
   useEffect(() => {
     if (quillRef.current) {
-      const quill = quillRef.current.getEditor();
-      quill.root.innerHTML = htmlContent;
-      quill.on('text-change', () => {
-        console.log('hi');
-        setHtmlContent(quill.root.innerHTML);
-      });
+      const imgCheckRegex: any = new RegExp('data:image/([a-zA-Z]*);base64,([^"]*)', 'g');
+      const base64ImgString = quillRef?.current?.getEditor().root.innerHTML.match(imgCheckRegex);
+      const asyncWrite = async () => {
+        if (imageHtmlCheck.current === true) {
+          const base64Img = dataURLtoFile(base64ImgString, `base64 + ${new Date()}`);
+          const file = base64Img;
+          const formData = new FormData();
+          formData.append('files', file);
+          const range = quillRef?.current?.getEditor().selection.savedRange;
+          const res: any = await apiPostNewsImage(formData);
+          quillRef?.current?.getEditor().deleteText(range.index, 1);
+          quillRef?.current?.getEditor().insertEmbed(range.index, 'image', res.data);
+          imageHtmlCheck.current = false;
+        }
+      };
+      if (base64ImgString) {
+        imageHtmlCheck.current = true;
+        asyncWrite();
+      }
+      if (!imageHtmlCheck.current) {
+        quillRef?.current?.getEditor().on('text-change', () => {
+          setHtmlContent(quillRef?.current?.getEditor().root.innerHTML);
+        });
+      }
     }
-  }, [quillRef?.current]);
+  }, [quillRef?.current?.getEditor()?.root.innerHTML]);
 
   const history = useHistory();
   return (
     <div className="write-style">
-      {/* {JSON.stringify(htmlContent)} */}
       <ReactQuill
         theme="snow"
         ref={quillRef}
-        value={htmlContent || ''}
-        onChange={handleChange}
+        value={htmlContent}
         modules={{
           toolbar: {
             container: [
@@ -134,14 +79,10 @@ const WriteComponent = () => {
               [{ size: [] }],
               ['bold', 'italic', 'underline', 'strike', 'blockquote'],
               [{ list: 'ordered' }, { list: 'bullet' }],
-              ['link', 'video'],
-              ['link', 'image', 'video'],
+              ['link', 'image'],
               ['clean'],
               ['code-block'],
             ],
-            handlers: {
-              image: imageHandler,
-            },
           },
         }}
       />
