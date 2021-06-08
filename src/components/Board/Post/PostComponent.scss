@@ -1,6 +1,6 @@
-.update-style {
-  margin-top: 3%;
+.post-style {
   width: 100%;
+  font-size: 1.2rem;
   &__titleBox {
     display: flex;
     align-items: center;
@@ -20,17 +20,24 @@
       margin-left: 5%;
     }
   }
-  &__contentBox {
-    .ql-container {
-      background-color: white;
-      .ql-editor {
-        overflow-y: auto;
-        min-height: 40vh;
-        max-height: 80vh;
-      }
+
+  &__htmlBox {
+    overflow-y: auto;
+    min-height: 40vh;
+    max-height: 80vh;
+    border-inline: solid 1px #cccccc;
+    border: solid 1px #cccccc;
+    background-color: white;
+    text-align: initial;
+    > p {
+      padding: 1rem;
+    }
+    img {
+      object-fit: contain;
+      max-width: 100%;
+      max-height: 100%;
     }
   }
-
   &__btnBox {
     display: flex;
     margin-top: 1%;
@@ -38,9 +45,12 @@
     flex-direction: row;
     justify-content: flex-end;
 
-    .goBackBtn {
+    .updateBtn {
     }
-    .submitBtn {
+    .deleteBtn {
+      margin-left: 1%;
+    }
+    .goBackBtn {
       margin-left: 1%;
     }
   }

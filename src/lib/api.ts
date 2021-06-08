@@ -1,6 +1,6 @@
 import axios, { AxiosResponse } from 'axios';
 // import { authEncode } from 'src/lib/authenEncodeFunction';
-import { getCookie, setCookie } from 'src/lib/cookieFunction';
+import { setCookie } from 'src/lib/cookieFunction';
 const BASENAME = 'http://192.168.0.12:8000';
 // process.env.REACT_APP_PRO_API_URL;
 // process.env.NODE_ENV !== 'production' ? process.env.REACT_APP_DEV_API_URL : process.env.REACT_APP_PRO_API_URL;
@@ -15,6 +15,8 @@ const path: any = {
   board: 'api/post',
   tokenRefresh: 'api/token/refresh',
   tempImage: 'api/post/image',
+  writePost: 'api/post',
+  updatePost: 'api/post',
 };
 
 interface Iinfo {
@@ -43,7 +45,7 @@ function callApi({ ...info }: Iinfo) {
 
   const url = id ? `${API_HEAD}/${path[api]}/${id}` : `${API_HEAD}/${path[api]}`;
 
-  // axios.defaults.withCredentials = true;
+  axios.defaults.withCredentials = true;
   return axios({
     method,
     url,

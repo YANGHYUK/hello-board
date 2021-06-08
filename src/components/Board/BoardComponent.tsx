@@ -13,12 +13,15 @@ const BoardComponent = () => {
   const dispatch = useDispatch();
   const history = useHistory();
   const { isLogin } = HooksLogin();
+  const getList = () => {
+    dispatch(listRequest({ method: 'get', api: 'board', token: getCookie('access') }));
+  };
   useEffect(() => {
     if (isLogin) {
       if (history.location.pathname === '/') {
         history.replace('/board');
       }
-      dispatch(listRequest({ method: 'get', api: 'board', token: getCookie('access') }));
+      getList();
     }
   }, [isLogin]);
 
@@ -54,7 +57,7 @@ const BoardComponent = () => {
         <Update />
       </Route>
       <Route exact path={['/board/write']}>
-        <Write />
+        <Write getList={getList} />
       </Route>
 
       <table className="board-style__list">
@@ -62,16 +65,16 @@ const BoardComponent = () => {
           <tr>
             <th>no</th>
             <th>제목</th>
-            <th>내용</th>
+            <th>작성자</th>
           </tr>
         </thead>
         <tbody>
           {list.length ? (
-            list.map((content: { id: number; title: string; text: string }) => (
-              <tr key={content.id}>
+            list.map((content: { id: number; title: string; username: string }) => (
+              <tr key={content.id} onClick={() => history.push(`/board/post/${content.id}`)}>
                 <td>{content.id}</td>
                 <td>{content.title}</td>
-                <td>{content.text}</td>
+                <td>{content.username}</td>
               </tr>
             ))
           ) : (
@@ -82,11 +85,11 @@ const BoardComponent = () => {
         </tbody>
       </table>
       <div className="board-style__btnBox">
-        {history.location.pathname === '/board' && (
-          <button className="postBtn" type="button" onClick={() => history.push('/board/write')}>
-            글쓰기
-          </button>
-        )}
+        {/* {history.location.pathname === '/board' && ( */}
+        <button className="postBtn" type="button" onClick={() => history.push('/board/write')}>
+          글쓰기
+        </button>
+        {/* )} */}
       </div>
     </div>
   );

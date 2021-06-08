@@ -19,7 +19,6 @@ function App() {
   useEffect(() => {
     if (!isLogin) {
       if (localStorage.getItem('refresh')) {
-        console.log(localStorage.getItem('refresh'));
         dispatch(
           tokenRefreshRequest({
             method: 'post',

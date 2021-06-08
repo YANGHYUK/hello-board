@@ -67,33 +67,32 @@ export function* tokenRefreshRequest(action: any) {
 
 export function* logoutRequest(action: PayloadAction<IlogoutRequest>) {
   const { payload } = action;
-  const { callback } = payload;
-
+  // const { callback } = payload;
+  removeCookie('access');
+  localStorage.removeItem('refresh');
   const successAction = (res: any) =>
     function* noname() {
       const payload = res.data;
-      removeCookie('access');
-      localStorage.removeItem('refresh');
+
       yield put({
         type: 'login/logoutRequestSuccess',
         payload,
       });
-      if (callback) {
-        yield callback(); // history.push("/")
-      }
+      // if (callback) {
+      // yield callback(); // history.push("/")
+      // }
     };
   const failureAction = (res: any) =>
     function* noname() {
       const payload = res.data;
-      removeCookie('access');
-      localStorage.removeItem('refresh');
+
       yield put({
         type: 'login/logoutRequestFailure',
         payload,
       });
-      if (callback) {
-        yield callback(); // history.push("/")
-      }
+      // if (callback) {
+      // yield callback(); // history.push("/")
+      // }
     };
   yield fork(fetchData, { payload, successAction, failureAction });
 }

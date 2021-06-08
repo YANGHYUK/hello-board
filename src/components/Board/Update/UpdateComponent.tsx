@@ -1,9 +1,28 @@
-import React, { useState, useRef } from 'react';
+import React, { useState, useRef, useEffect } from 'react';
 import ReactQuill from 'react-quill'; // Typescript
+import { useDispatch } from 'react-redux';
 import { useHistory } from 'react-router-dom';
+import { getPostRequest, updatePostRequest, HooksBoard } from 'src/store/board/boardSlice';
+import { getCookie } from 'src/lib/cookieFunction';
 import './UpdateComponent.scss';
+
 const UpdateComponent = () => {
-  const [htmlContent, setHtmlContent] = useState(null);
+  const { currentPost } = HooksBoard();
+  useEffect(() => {
+    // dispatch(getPostRequest({ method: 'get', api: 'board', id: match?.params?.id }));
+    if (!currentPost) {
+      history.goBack();
+    }
+  }, []);
+
+  const [title, setTitle] = useState(currentPost?.title || '');
+
+  const onChangeTitle = (e: React.ChangeEvent<HTMLInputElement>) => {
+    const { value } = e.target || '';
+    setTitle(value);
+  };
+
+  const [htmlContent, setHtmlContent] = useState(currentPost?.text || '');
   const quill: any = useRef(null);
   const handleChange = (html: any) => {
     setHtmlContent(html);
@@ -45,37 +64,62 @@ const UpdateComponent = () => {
     };
   };
   const history = useHistory();
+
+  const dispatch = useDispatch();
+  const getPost = () => {
+    dispatch(getPostRequest({ method: 'get', api: 'board', id: currentPost.id }));
+  };
+  const onSubmit = () => {
+    dispatch(
+      updatePostRequest({
+        method: 'put',
+        api: 'updatePost',
+        data: { title, text: htmlContent },
+        token: getCookie('access'),
+        id: currentPost?.id,
+        callback: () => {
+          getPost();
+          history.goBack();
+        },
+      }),
+    );
+  };
   return (
     <div className="update-style">
-      {JSON.stringify(htmlContent)}
-      <ReactQuill
-        theme="snow"
-        ref={quill}
-        // value={htmlContent}
-        onChange={handleChange}
-        modules={{
-          toolbar: {
-            container: [
-              [{ header: '1' }, { header: '2' }, { header: [3, 4, 5, 6] }, { font: [] }],
-              [{ size: [] }],
-              ['bold', 'italic', 'underline', 'strike', 'blockquote'],
-              [{ list: 'ordered' }, { list: 'bullet' }],
-              ['link', 'video'],
-              ['link', 'image', 'video'],
-              ['clean'],
-              ['code-block'],
-            ],
-            handlers: {
-              image: imageHandler,
+      <div className="update-style__titleBox">
+        <input className="title" value={title} placeholder="제목을 입력해주세요" onChange={onChangeTitle} />
+      </div>
+      <div className="update-style__contentBox">
+        <ReactQuill
+          theme="snow"
+          ref={quill}
+          // defaultValue={currentPost?.text}
+          value={htmlContent || ''}
+          onChange={handleChange}
+          modules={{
+            toolbar: {
+              container: [
+                [{ header: '1' }, { header: '2' }, { header: [3, 4, 5, 6] }, { font: [] }],
+                [{ size: [] }],
+                ['bold', 'italic', 'underline', 'strike', 'blockquote'],
+                [{ list: 'ordered' }, { list: 'bullet' }],
+                ['link', 'video'],
+                ['link', 'image', 'video'],
+                ['clean'],
+                ['code-block'],
+              ],
+              handlers: {
+                image: imageHandler,
+              },
             },
-          },
-        }}
-      />
+          }}
+        />
+      </div>
       <div className="update-style__btnBox">
         <button type="button" className="goBackBtn" onClick={() => history.goBack()}>
           취소
         </button>
-        <button type="button" className="submitBtn" onClick={() => history.goBack()}>
+        <button type="button" className="submitBtn" onClick={onSubmit}>
           수정
         </button>
       </div>
