@@ -8,6 +8,7 @@ import './WriteComponent.scss';
 import { getCookie } from 'src/lib/cookieFunction';
 import axios from 'axios';
 import { writeRequest } from 'src/store/board/boardSlice';
+import 'react-quill/dist/quill.snow.css';
 const WriteComponent = (props: any) => {
   const [title, setTitle] = useState('');
 
@@ -52,6 +53,7 @@ const WriteComponent = (props: any) => {
         imageHtmlCheck.current = false;
         const base64Img = dataURLtoFile(base64ImgString, `base64 + ${new Date()}`);
         const file = base64Img;
+        console.log({ file });
         const formData = new FormData();
         formData.append('files', file);
         const range = quillRef?.current?.getEditor().selection.savedRange;
@@ -80,9 +82,9 @@ const WriteComponent = (props: any) => {
         api: 'writePost',
         data: { title, text: htmlContent },
         token: getCookie('access'),
+        history,
         callback: () => {
           props.getList();
-          history.goBack();
         },
       }),
     );

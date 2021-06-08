@@ -66,17 +66,18 @@ export function* listRequest(action: PayloadAction<IlistRequest>) {
 
 export function* writeRequest(action: PayloadAction<IwriteRequest>) {
   const { payload } = action;
-  const { callback } = payload;
+  const { history, callback } = payload;
   const successAction = (res: any) =>
     function* noname() {
       const payload = res.data;
-
+      const { redirect } = payload;
       yield put({
         type: 'board/writeRequestSuccess',
         payload,
       });
       if (callback) {
         yield callback(); //
+        yield history.push(redirect);
       }
     };
   const failureAction = (res: any) =>
@@ -126,10 +127,11 @@ export function* getPostRequest(action: any) {
 
 export function* updatePostRequest(action: any) {
   const { payload } = action;
-  const { callback } = payload;
+  const { callback, history } = payload;
   const successAction = (res: any) =>
     function* noname() {
       const payload = res.data;
+      const { redirect } = payload;
 
       yield put({
         type: 'board/updatePostRequestSuccess',
@@ -137,6 +139,7 @@ export function* updatePostRequest(action: any) {
       });
       if (callback) {
         yield callback(); //
+        yield history.push(redirect);
       }
     };
   const failureAction = (res: any) =>

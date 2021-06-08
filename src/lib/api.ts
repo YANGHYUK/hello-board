@@ -1,7 +1,7 @@
 import axios, { AxiosResponse } from 'axios';
 // import { authEncode } from 'src/lib/authenEncodeFunction';
 import { setCookie } from 'src/lib/cookieFunction';
-const BASENAME = 'http://192.168.0.12:8000';
+const BASENAME = 'http://192.168.0.12:8000'; // local 서버
 // process.env.REACT_APP_PRO_API_URL;
 // process.env.NODE_ENV !== 'production' ? process.env.REACT_APP_DEV_API_URL : process.env.REACT_APP_PRO_API_URL;
 // process.env.REACT_APP_PRO_API_URL;
@@ -17,6 +17,7 @@ const path: any = {
   tempImage: 'api/post/image',
   writePost: 'api/post',
   updatePost: 'api/post',
+  deletePost: 'api/post',
 };
 
 interface Iinfo {

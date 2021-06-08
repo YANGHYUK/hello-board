@@ -86,7 +86,14 @@ const BoardComponent = () => {
       </table>
       <div className="board-style__btnBox">
         {/* {history.location.pathname === '/board' && ( */}
-        <button className="postBtn" type="button" onClick={() => history.push('/board/write')}>
+        <button
+          className="postBtn"
+          type="button"
+          onClick={() => {
+            history.push('/board/write');
+            window.scrollTo(0, 0);
+          }}
+        >
           글쓰기
         </button>
         {/* )} */}

@@ -33,6 +33,7 @@ export interface IwriteRequest {
   api: string;
   data: { title: string; text: string };
   token: string;
+  history: any;
   callback?: (() => void | undefined) | undefined;
 }
 export type boardActionType = PayloadAction<IlistRequest> | PayloadAction<IlistRequestSuccess>;

@@ -32,6 +32,10 @@ function App() {
     }
   }, [isLogin]);
 
+  useEffect(() => {
+    window.scrollTo(0, 0);
+  }, [history.location.pathname]);
+
   return (
     <div className="App">
       <Suspense fallback={<div>...loading...</div>}>
